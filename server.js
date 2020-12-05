@@ -376,7 +376,7 @@ export class EncryptedCollection extends Meteor.Collection {
         }
       });
     }
-    else if (typeof optionsOrFn === "function") {
+    if (typeof optionsOrFn === "function") {
       this._encryptionOptions = (...args) => {
         const returnedConfig = optionsOrFn(...args) || {};
         const options = Object.assign({}, this.__encryptionOptions);

@@ -1,6 +1,6 @@
 Package.describe({
   name: "znewsham:auto-encrypt",
-  version: "0.1.2",
+  version: "0.1.3",
   summary: "Provides a MongoDB like auto-encrypt feature for self-hosted clusters",
   git: 'https://github.com/znewsham/meteor-auto-encrypt',
   documentation: 'README.md'
