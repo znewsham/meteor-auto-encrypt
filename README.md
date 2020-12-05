@@ -3,6 +3,7 @@
 Provides similar behaviour to https://docs.mongodb.com/manual/core/security-automatic-client-side-encryption/ but for self-hosted community versioned clusters. Additionally, supports querying over encrypted arrays.
 
 ## Basic Usage
+
 To allow for support with `aldeed:collection2` and schemas in general, we have to monkey-patch `Mongo.Collection`'s `insert`, `update`, `remove`, `find` and `findOne` methods. As such, all collections will have the ability to have encrypted fields. However, to support both encrypted fields and schema validation, `znewsham:auto-encrypt` must be listed before `aldeed:collection2` in `.meteor/packages`.
 
 If you are defining a new collection, using the `EncryptedCollection` is the easiest way to go. Passing in the encryption options to the collection. as the second parameter:
@@ -68,6 +69,7 @@ collection.insert({
 ```
 
 ## Advanced Usage
+
 You may want to apply different encryption over different fields - consider:
 ```js
 const collection = new EncryptedCollection("myCollection", encOptions);
@@ -108,6 +110,7 @@ collection.insert({
 You can override any of the default options on a per-field basis, `algorithm` is the most common though.
 
 ### Multi-Tenant Systems
+
 Consider a multi-tenant system, where you want to use a different `keyAltName` (or potentially a different `masterKey`) for each tenancy:
 
 ```js
@@ -174,7 +177,7 @@ Relevant to `find` and the selector argument of `update` and `remove`.
 
 Just like the mongo supported AutoEncrypt feature, this package supports `$eq`, `$ne`, `$in`, `$nin`, `$and`, `$or`, `$nor`, `$not` operators with encryption. The `$size` and `$exists` operators are passed through un-modified.
 
-In addition to this - this package also supports querying over encrypted elements of arrays, `$size` only makes sense in this context and is passed through un-encrypted. However, the following also works:
+In addition to this - this package also supports querying over encrypted elements of arrays, `$size` only makes sense in this context and is passed through un-encrypted. So, the following also works:
 
 ```js
 collection.configureEncryption({ schema: { "array.$": true } });
@@ -194,10 +197,10 @@ collection.configureEncryption({ schema: { "array.$": true } });
 collection.update({}, { $push: { array: "value" } }) // value will be encrypted and added to array.
 
 collection.update({}, { $addToSet: { array: { $each: ["value1", "value2"] } } }) // value1 and value2 will be encrypted and added to array, if their encrypted values do NOT already exist.
-
 ```
 
 ## Performance
+
 EncryptedCollection uses a cache for both instances of `ClientEncryption`, and references of `keyAltName`. The former is unique per configuration options (e.g., master key, etc) AND by it's external connection (e.g., the actual connection to the database). `keyAltName` are cached - just so we don't always need to ensure they exist, the first DB operation will be slower as it fetches from `keyVaultNamespace`.
 
 In the case that your configuration is a static object, containing static field definitions, the performance should be similar to that of the native driver. It will scale according to the number of encrypted fields you have, and the number of fields in each operation (keys in selector, document or mutator). For each of these keys the lookup time is `O(n)` per depth of field, e.g., `a.b.c ~ O(3)` `a ~ O(1)`.
@@ -205,6 +208,7 @@ In the case that your configuration is a static object, containing static field 
 If you use functions for either the overall, or per-field settings, these functions will be called once per `remove` and `insert`, twice for `update`, and once per document + once globally for `find`/`findOne`. This is because for each document it is possible there will be different settings. However, if you know that all documents for a specific query will always use the same settings (e.g., your settings depend on `tenancyId` and your query will include `tenancyId`), you can pass in `{ fastAutoEncryption: true }` as the third parameter to `find`/`findOne` and it will skip the per-document lookup.
 
 ## Migrating un-encrypted collections
+
 Obviously, if you have an existing application with un-encrypted data that you'll want to add encryption to, you need a way of reading the unencrypted data then writing back encrypted data:
 
 ```js
