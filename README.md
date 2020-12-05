@@ -14,7 +14,7 @@ import crypto from "crypto";
 const masterKey = crypto.randomBytes(96);
 
 const encOptions = {
-  keyVaultNamespace: "meteor.keyVault", // you are responsible for ensuring a unique key on this collection on keyAltName
+  keyVaultNamespace: "meteor.keyVault", // you are responsible for ensuring a unique key on this collection on keyAltNames field
   // not suitable for production - use aws
   kmsProviders: {
     local: {
