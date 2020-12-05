@@ -1,0 +1,9 @@
+{
+  "env": {
+    "dev": {
+      "plugins": [
+        ["@babel/babel-plugin-istanbul"]
+      ]
+    }
+  }
+}
