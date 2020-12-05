@@ -1,6 +1,6 @@
 Package.describe({
   name: "znewsham:auto-encrypt",
-  version: "0.0.4",
+  version: "0.1.0",
   // Brief, one-line summary of the package.
   summary: "Provides a MongoDB like auto-encrypt feature for self-hosted clusters"
 });
