@@ -53,6 +53,7 @@ const origFunctions = {
 function newFunction({
   conversionFn,
   currentObj,
+  inPlace = false,
   currentSchema,
   originalMethodName,
   originalMethodArgs,
@@ -63,7 +64,7 @@ function newFunction({
   if (!currentSchema) {
     return currentObj;
   }
-  const ret = Array.isArray(currentObj) ? [] : {};
+  const ret = inPlace ? currentObj : (Array.isArray(currentObj) ? [] : {});
   Array.from(currentObj.entries ? currentObj.entries() : Object.entries(currentObj))
   .forEach(([key, value]) => {
     if (passthroughOperators.has(key)) {
@@ -157,6 +158,7 @@ function wrapCursor(cursor, rootEncryptionOptions, originalMethodArgs) {
         return doc;
       }
       return newFunction({
+        inPlace: true,
         conversionFn: __decryptConversionFunction,
         currentObj: doc,
         currentSchema: encryptionOptions.schema,
@@ -174,6 +176,7 @@ function wrapCursor(cursor, rootEncryptionOptions, originalMethodArgs) {
         return doc;
       }
       const decrypted = newFunction({
+        inPlace: true,
         conversionFn: __decryptConversionFunction,
         currentObj: doc,
         currentSchema: encryptionOptions.schema,
@@ -191,6 +194,7 @@ function wrapCursor(cursor, rootEncryptionOptions, originalMethodArgs) {
       return doc;
     }
     const decrypted = newFunction({
+      inPlace: true,
       conversionFn: __decryptConversionFunction,
       currentObj: doc,
       currentSchema: encryptionOptions.schema,
@@ -510,6 +514,7 @@ export class EncryptedCollection extends Meteor.Collection {
       return result;
     }
     return newFunction({
+      inPlace: true,
       conversionFn: __decryptConversionFunction,
       currentObj: result,
       currentSchema: encryptionOptions.schema,

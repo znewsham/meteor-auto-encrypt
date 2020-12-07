@@ -1379,6 +1379,35 @@ describe("EncryptedCollection", () => {
     });
   });
 
+  describe("Transform", () => {
+    class Thing {}
+    const collection2 = new EncryptedCollection("test", { ...encOptions, transform: doc => new Thing(doc) });
+
+    beforeEach(() => {
+      collection2.remove({});
+      collection2.configureEncryption({ schema: { field: true } });
+      collection2.insert({ _id: "1", field: "test" });
+    });
+
+    it("findOne should transform", () => {
+      chai.assert.ok(collection2.findOne() instanceof Thing);
+    });
+
+    it("find.fetch should transform", () => {
+      chai.assert.ok(collection2.find().fetch()[0] instanceof Thing);
+    });
+
+    it("find.map should transform", () => {
+      chai.assert.ok(collection2.find().map(a => a)[0] instanceof Thing);
+    });
+
+    it("find.forEach should transform", () => {
+      collection2.find().forEach((aThing) => {
+        chai.assert.ok(aThing instanceof Thing);
+      });
+    });
+  });
+
   describe("Advanced cases", () => {
     it("Should update positional", () => {
       collection.configureEncryption(encOptions, false);
