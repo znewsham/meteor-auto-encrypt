@@ -1,3 +1,6 @@
+# Critical Note:
+This project is still a WIP - it does not play nicely with https://github.com/Meteor-Community-Packages/meteor-collection-hooks (which operates at a lower DB level than this package) and there are some specific modifiers that this package does not currently support. 
+
 # Auto Client-side Field Level Encryption
 
 Provides similar behaviour to https://docs.mongodb.com/manual/core/security-automatic-client-side-encryption/ but for self-hosted community versioned clusters. Additionally, supports querying over encrypted arrays.
